@@ -3,6 +3,9 @@
 ## A minimialist introduction to React
 
 ### The problem: the city state problem
+
+![The-problem](/images/prob.png)
+
 - State, City, Village as dropdowns
 - State changes => City list must change
 - City changes => Villages list much change
