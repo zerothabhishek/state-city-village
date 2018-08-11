@@ -1,0 +1,67 @@
+
+<div id='root'></div>
+
+<script src='https://unpkg.com/react@16.0.0/umd/react.production.min.js'></script>
+<script src='https://unpkg.com/react-dom@16.0.0/umd/react-dom.production.min.js'></script>
+<script src='https://unpkg.com/babel-standalone@6.26.0/babel.js'></script>
+
+<script type='text/babel'>
+  const rootElement = document.getElementById('root')
+  //const el = React.createElement('div', {className: 'container'}, 'Hello', 'hi')
+//   const el = React.createElement('div', {
+//       className: 'container',
+//       children: 'Hello' , //['Hello', 'hi']
+//     }, 'hi', 'how', 'are', 'you')
+//   console.log(el)
+
+    // const content = 'Hello'
+    // const myClass = 'container'
+    // //const el = <div className={myClass}>{(() => content)()} </div>
+    // const props = {
+    //     className: 'container',
+    //     children: 'Hwllo'
+    // }
+    // const el = (
+    //     <div {...props} className='my-class'/>
+    // )
+
+    let msgs = ['Hello World', 'Hello Universe']
+
+    // const el = (
+    //     <div>
+    //         { msgs }
+    //     </div>
+    // )
+
+    // const el = (
+    //     <div>
+    //         { msgs.map((x)=> React.createElement('span',null, x) ) }
+    //     </div>
+    // )
+
+    // const el = (
+    //     <div>
+    //         { msgs.map((x) => <span> {x} </span> ) }
+    //     </div>
+    //)
+
+    // const emit = (x) => <span> {x} </span>
+    // const el = <div> { msgs.map(emit) } </div>
+
+    // const emit = (x) => <span> {x} </span>
+    // const full = msgs.map(emit)
+    // const none = 'No messages'
+    // const el = <div> { msgs.length > 0 ? full : none } </div>
+
+    const Emit = (props) => (
+        <span className={props.className}> {props.children } </span>
+    )
+
+    const el =  <div>
+                    <Emit className='c-1'>Hello World</Emit>
+                    <Emit className='c-2'>Hello Universe</Emit>
+                </div>
+    
+
+    ReactDOM.render(el, rootElement);
+</script>

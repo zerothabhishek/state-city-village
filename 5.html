@@ -1,0 +1,91 @@
+
+<br>
+<div id='root' style="margin-left: 5rem"></div>
+
+<script src='https://unpkg.com/react@16.4.2/umd/react.production.min.js'></script>
+<script src='https://unpkg.com/react-dom@16.4.2/umd/react-dom.production.min.js'></script>
+<script src='https://unpkg.com/babel-standalone@6.26.0/babel.js'></script>
+
+<script type='text/babel'>
+
+  class MyForm extends React.Component {
+    state = {
+      districts: {
+        'Tamil Nadu':     ['Chennai', 'Madurai', 'Trichy'],
+        'Andhra Pradesh': ['Vizag', 'Nellore'],
+        'Karnataka':      ['Bangalore', 'Mysore', 'Mangalore'],
+        'Kerala':         ['Cochin', 'Ernakulam', 'Kasargod'],
+      },
+      villages: undefined,
+      chosenState: 'Tamil Nadu',
+      chosenDistrict: undefined,
+      chosenVillage:undefined
+    }
+
+    constructor(props) {
+      super(props);
+      this.onStateSelect = this.onStateSelect.bind(this);
+      this.onDistrictSelect = this.onDistrictSelect.bind(this);
+      this.loadVillages = this.loadVillages.bind(this);
+    }
+
+    onStateSelect(event) {
+      event.preventDefault();
+      const theState = event.target.value;
+      const firstDist = this.state.districts[theState][0];
+      this.setState({ chosenState: theState, chosenDistrict: undefined});
+      this.loadVillages(firstDist); // <= as initial state
+    }
+
+    onDistrictSelect(event) {
+      event.preventDefault();
+      this.setState({ chosenDistrict: event.target.value });
+      this.loadVillages(event.target.value);
+    }
+
+    loadVillages(district) {
+      fetch(`/villages/${district}.json`)
+      .then(res => res.json())
+      .then(vdata => { this.setState({ villages: vdata }) });
+    }
+
+    render() {
+      const theStates = Object.keys(this.state.districts);
+      const ds = this.state.districts[this.state.chosenState];
+      const vs = this.state.villages;
+      return (
+        <form>
+
+          State: &nbsp;
+          <select id='the-state' name='the-state' onChange={this.onStateSelect} >
+            {theStates.map(s => <option selected={this.state.chosenState === s}> {s} </option> )} {/* <= selected or not */}
+          </select>
+
+          &nbsp;&nbsp;
+
+          District: &nbsp;
+          <select id='district' name='district' onChange={this.onDistrictSelect}>
+            {ds.map(d => <option selected={this.state.chosenDistrict === d}> {d} </option> )}
+          </select>
+
+          &nbsp;&nbsp;
+
+          Villages: &nbsp;
+          {vs &&
+          <select id='village' name='village'>
+            {vs.map(v => <option selected={this.state.chosenVillage === v} > {v} </option> )}
+          </select>}
+
+        </form>
+      );
+    }
+  }
+
+  const App = 
+    <div> 
+      <MyForm />
+    </div>;
+
+  const rootElement = document.getElementById('root');
+  ReactDOM.render(App, rootElement);
+</script>

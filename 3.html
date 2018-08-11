@@ -1,0 +1,63 @@
+
+<br>
+<div id='root' style="margin-left: 5rem"></div>
+
+<script src='https://unpkg.com/react@16.4.2/umd/react.production.min.js'></script>
+<script src='https://unpkg.com/react-dom@16.4.2/umd/react-dom.production.min.js'></script>
+<script src='https://unpkg.com/babel-standalone@6.26.0/babel.js'></script>
+
+<script type='text/babel'>
+
+  class MyForm extends React.Component { // <= class here
+    state = {
+      districts: {
+        'Tamil Nadu':     ['Chennai', 'Madurai', 'Trichy'],
+        'Andhra Pradesh': ['Vizag', 'Nellore'],
+        'Karnataka':      ['Bangalore', 'Mysore', 'Mangalore'],
+        'Kerala':         ['Cochin', 'Ernakulam', 'Kasargod'],
+      },
+      chosenState: 'Tamil Nadu', // <= initial state
+    }
+
+    constructor(props) {
+      super(props);
+      this.onStateSelect = this.onStateSelect.bind(this); // <= Why this ?
+    }
+
+    onStateSelect(event) {
+      event.preventDefault();
+      this.setState({ chosenState: event.target.value }); // <= The mighty setState
+    }
+
+    render() {
+      const theStates = Object.keys(this.state.districts);
+      const ds = this.state.districts[this.state.chosenState];
+      return (
+        <form>
+
+          State:
+          <select id='the-state' name='the-state' onChange={this.onStateSelect} >
+            {theStates.map(s => <option> {s} </option> )}
+          </select>
+
+          &nbsp;&nbsp;
+
+          District:
+          <select id='district' name='district'>
+            {ds.map(d => <option>{d}</option> )}
+          </select>
+
+        </form>
+      );
+    }
+  }
+
+  const App = 
+    <div> 
+      Hello world
+      <MyForm />
+    </div>;
+
+  const rootElement = document.getElementById('root');
+  ReactDOM.render(App, rootElement);
+</script>

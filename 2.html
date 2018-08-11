@@ -1,0 +1,52 @@
+
+<br>
+<div id='root' style="margin-left: 5rem"></div>
+
+<script src='https://unpkg.com/react@16.4.2/umd/react.production.min.js'></script>
+<script src='https://unpkg.com/react-dom@16.4.2/umd/react-dom.production.min.js'></script>
+<script src='https://unpkg.com/babel-standalone@6.26.0/babel.js'></script>
+
+<script type='text/babel'>
+  const onStateSelect = (event) => {
+    event.preventDefault();
+    console.log(event.target.value);
+    window.theState = event.target.value;
+  }
+
+  const districts = {
+    'Tamil Nadu':     ['Chennai', 'Madurai', 'Trichy'],
+    'Andhra Pradesh': ['Vizag', 'Nellore'],
+    'Karnataka':      ['Bangalore', 'Mysore', 'Mangalore'],
+    'Kerala':         ['Cochin', 'Ernakulam', 'Kasargod'],
+  }
+
+  const districtsTN = districts['Tamil Nadu']; // Initial
+
+  const MyForm = () =>
+    <form>
+
+      State:
+      <select id='the-state' name='the-state' onChange={onStateSelect} >
+        <option>Andhra Pradesh</option>
+        <option>Karnataka</option>
+        <option>Kerala</option>
+        <option>Tamil Nadu</option>
+      </select>
+
+      &nbsp;&nbsp;
+
+      District:
+      <select id='district' name='district'>
+        {districtsTN.map((d) => <option>{d}</option> )}
+      </select>
+
+    </form>
+
+  const App = 
+    <div> 
+      <MyForm />
+    </div>;
+
+  const rootElement = document.getElementById('root');
+  ReactDOM.render(App, rootElement);
+</script>

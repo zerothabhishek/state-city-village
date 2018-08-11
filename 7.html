@@ -1,0 +1,138 @@
+
+<br>
+<div id='root' style="margin-left: 5rem"></div>
+
+<script src='https://unpkg.com/react@16.4.2/umd/react.production.min.js'></script>
+<script src='https://unpkg.com/react-dom@16.4.2/umd/react-dom.production.min.js'></script>
+<script src='https://unpkg.com/babel-standalone@6.26.0/babel.js'></script>
+
+<script type='text/babel'>
+
+  const AreaSelect = ( { list, chosen, onChoose, id }) => {
+    if (list === undefined) return '';
+
+    const onChangeLocal = (event) => {
+      event.preventDefault();
+      onChoose({ id,  value: event.target.value });
+    }
+
+    return (
+      <select id={id} name={id} onChange={onChangeLocal} >
+        {list.map(item => <option selected={chosen === item}> {item} </option> )}
+      </select>
+    );
+  }
+
+  const TheDistricts = {
+    'Tamil Nadu':     ['Chennai', 'Madurai', 'Trichy'],
+    'Andhra Pradesh': ['Vizag', 'Nellore'],
+    'Karnataka':      ['Bangalore', 'Mysore', 'Mangalore'],
+    'Kerala':         ['Cochin', 'Ernakulam', 'Kasargod'],
+  }
+
+  const TheStates = Object.keys(TheDistricts);
+
+  class MyForm extends React.Component {
+    state = {
+        villages: [],
+        chosenState: undefined,
+        chosenDistrict: undefined,
+        chosenVillage: undefined,
+      }
+
+    constructor(props) {
+      super(props);
+
+      // Initial values
+      this.state.chosenState = TheStates[0];
+      this.state.chosenDistrict = TheDistricts[TheStates[0]][0];
+
+      this.onStateSelect = this.onStateSelect.bind(this);
+      this.onDistrictSelect = this.onDistrictSelect.bind(this);
+      this.onVillageSelect = this.onVillageSelect.bind(this);
+
+      this.loadVillages = this.loadVillages.bind(this);
+      this.submitForm = this.submitForm.bind(this);
+    }
+
+    onStateSelect({ value }) {
+      const theState = value;
+      const firstDist = TheDistricts[theState][0];
+      this.setState({ chosenState: theState, chosenDistrict: undefined, chosenVillage: undefined });
+      this.loadVillages(firstDist);
+    }
+
+    onDistrictSelect({ value }) {
+      this.setState({ chosenDistrict: value });
+      this.loadVillages(value);
+    }
+
+    onVillageSelect({ value }) {
+      this.setState({ chosenVillage: value });
+    }
+
+    loadVillages(district) {
+      fetch(`/villages/${district}.json`)
+      .then(res => res.json())
+      .then(vdata => { this.setState({ villages: vdata }) });
+    }
+
+    submitForm(event) {
+      event.preventDefault();
+
+      const payload = JSON.stringify({
+        chosenState: this.state.chosenState, 
+        chosenDistrict: this.state.chosenDistrict, 
+        chosenVillage: this.state.chosenVillage 
+      })
+      console.log(payload);
+
+      fetch('/selected', { method: 'POST', body: payload, headers: {} })
+    }
+
+    render() {
+      const ds = TheDistricts[this.state.chosenState];
+      return (
+        <form>
+          State:
+          <AreaSelect 
+            id='theState' 
+            list={TheStates}
+            chosen={this.state.selectedState}
+            onChoose={this.onStateSelect}
+          />
+
+          &nbsp;&nbsp;
+
+          District:
+          <AreaSelect
+            id='district'
+            list={ds}
+            chosen={this.state.selectedDistrict}
+            onChoose={this.onDistrictSelect}
+          />
+
+          &nbsp;&nbsp;
+
+          Villages:
+          <AreaSelect 
+            id='village'
+            list={this.state.villages}
+            chosen={this.state.chosenVillage}
+            onChoose={this.onVillageSelect} 
+          /> 
+
+          <p>
+            <button onClick={this.submitForm}> Submit </button>
+          </p>
+        </form>
+      );
+    }
+  }
+
+  const App = 
+    <div>  <MyForm /> </div>;
+
+  const rootElement = document.getElementById('root');
+  ReactDOM.render(App, rootElement);
+</script>
