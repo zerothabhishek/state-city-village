@@ -31,6 +31,7 @@
 - Change state dropdown
 - Notable: map function for iteration, event handling
 
+
 ### Step-3: setState
 - Automatic rendering - setState
 - class component and data as internal state
